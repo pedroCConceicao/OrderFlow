@@ -6,11 +6,8 @@ import jakarta.persistence.Table;
 
 import java.io.Serializable;
 
-@Entity
-@Table("ETQADM.TPEDIDO")
-public class Pedido implements Serializable {
+public class Pedido {
 
-    @Id
     private Long codigoPedido;
 
 }
