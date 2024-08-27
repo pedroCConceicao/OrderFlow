@@ -12,7 +12,7 @@ public class SobreController {
 
     @GetMapping
     public String sobre() {
-        return "OrderFlow - /sobr";
+        return "OrderFlow - /sobre";
     }
 
 
