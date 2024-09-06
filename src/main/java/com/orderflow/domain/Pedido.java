@@ -1,9 +1,6 @@
 package com.orderflow.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,6 +11,7 @@ import java.util.Date;
 public class Pedido implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codped")
     private Long codigoPedido;
 

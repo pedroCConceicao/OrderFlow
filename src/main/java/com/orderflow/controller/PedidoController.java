@@ -1,9 +1,10 @@
 package com.orderflow.controller;
 
 import com.orderflow.domain.Pedido;
+import com.orderflow.exception.InternalServerErrorException;
 import com.orderflow.service.PedidoService;
 import com.orderflow.service.serviceImpl.PedidoServiceImpl;
-import org.apache.coyote.BadRequestException;
+import com.orderflow.exception.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,10 @@ public class PedidoController {
         logger.info("Internalizando pedido");
         try {
             return ResponseEntity.ok(pedidoService.internalizarPedido(pedido));
-        } catch (Exception e) {
+        } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
+        } catch (InternalServerErrorException e) {
+            throw new InternalServerErrorException(e.getMessage());
         }
     }
 
