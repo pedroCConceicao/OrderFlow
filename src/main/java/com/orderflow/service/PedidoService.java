@@ -12,6 +12,7 @@ public interface PedidoService {
 
     Pedido internalizarPedido(Pedido pedido) throws BadRequestException;
 
-    String cancelarPedido(Long numeroPedido) throws BadRequestException;
+    String cancelarPedido(Long codigoPedido) throws BadRequestException;
 
+    String confirmarPedido(Long codigoPedido) throws BadRequestException;
 }

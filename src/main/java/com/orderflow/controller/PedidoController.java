@@ -46,9 +46,22 @@ public class PedidoController {
     }
 
     @PutMapping("/cancelarPedido")
-    public ResponseEntity<?> cancelarPedido(@RequestParam Long numeroPedido) throws BadRequestException {
-        logger.info("Cancelando pedido: " + numeroPedido);
-        return ResponseEntity.ok(pedidoService.cancelarPedido(numeroPedido));
+    public ResponseEntity<?> cancelarPedido(@RequestParam Long codigoPedido) throws BadRequestException {
+        try {
+            return ResponseEntity.ok(pedidoService.cancelarPedido(codigoPedido));
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @PutMapping("/confirmarPedido")
+    public ResponseEntity<?> confirmarPedido(@RequestParam Long codigoPedido) throws BadRequestException {
+        logger.info("Confirmando pedido: " + codigoPedido);
+        try {
+            return ResponseEntity.ok(pedidoService.confirmarPedido(codigoPedido));
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
 }

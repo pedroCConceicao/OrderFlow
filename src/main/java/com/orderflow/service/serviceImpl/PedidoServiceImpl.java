@@ -20,6 +20,8 @@ import java.util.Optional;
 @Service
 public class PedidoServiceImpl implements PedidoService {
 
+    // PEDIDO REALIZADO (1) / PEDIDO CONFIRMADO (2) / ENTREGUE (3) / CANCELADO (4)
+
     private static final Logger logger = LoggerFactory.getLogger(PedidoServiceImpl.class);
 
     @Autowired
@@ -76,15 +78,34 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public String cancelarPedido(Long numeroPedido) throws BadRequestException {
-        Pedido pedido = pedidoRepository.findByCodigoPedido(numeroPedido);
+    public String cancelarPedido(Long codigoPedido) throws BadRequestException {
+        Pedido pedido = pedidoRepository.findByCodigoPedido(codigoPedido);
+        Long statusPedido = pedido.getCodigoStatus();
 
-        // PEDIDO REALIZADO (1) / PEDIDO CONFIRMADO (2) / ENTREGUE (3) / CANCELADO (4)
+        if(statusPedido == 4) {
+            throw new BadRequestException("Pedido já foi cancelado!");
+        }
+
         pedido.setCodigoStatus(4L);
 
         pedidoRepository.save(pedido);
 
         return "Pedido Cancelado";
+    }
+
+    @Override
+    public String confirmarPedido(Long codigoPedido) throws BadRequestException {
+        Pedido pedido = pedidoRepository.findByCodigoPedido(codigoPedido);
+
+        if (pedido.getCodigoStatus() == 3 || pedido.getCodigoStatus() == 4) {
+            throw new BadRequestException("Pedido não pode ser confirmado!");
+        }
+
+        pedido.setCodigoStatus(2L);
+
+        pedidoRepository.save(pedido);
+
+        return "Pedido Confirmado";
     }
 
 }
