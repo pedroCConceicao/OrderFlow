@@ -8,10 +8,14 @@ import com.orderflow.exception.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PedidoServiceImpl implements PedidoService {
@@ -22,8 +26,20 @@ public class PedidoServiceImpl implements PedidoService {
     private PedidoRepository pedidoRepository;
 
     @Override
-    public List<Pedido> buscarPedidos() {
-        return pedidoRepository.findAll();
+    public List<Pedido> buscarPedidos(Long codigoPedido, Date dataPedido, Long codigoStatus, Long codigoProduto, Long codigoCliente) {
+        Pedido pedido = new Pedido();
+        pedido.setCodigoPedido(codigoPedido);
+        pedido.setDataPedido(dataPedido);
+        pedido.setCodigoStatus(codigoStatus);
+        pedido.setCodigoProduto(codigoProduto);
+        pedido.setCodigoCliente(codigoCliente);
+
+        ExampleMatcher matcher = ExampleMatcher.matchingAll()
+                .withIgnoreNullValues();
+
+        Example<Pedido> example = Example.of(pedido, matcher);
+
+        return pedidoRepository.findAll(example);
     }
 
     @Override
@@ -57,6 +73,18 @@ public class PedidoServiceImpl implements PedidoService {
         logger.info("Pedido internalizado com sucesso: código {}", pedidoSalvo.getCodigoPedido());
 
         return pedidoSalvo;
+    }
+
+    @Override
+    public String cancelarPedido(Long numeroPedido) throws BadRequestException {
+        Pedido pedido = pedidoRepository.findByCodigoPedido(numeroPedido);
+
+        // PEDIDO REALIZADO (1) / PEDIDO CONFIRMADO (2) / ENTREGUE (3) / CANCELADO (4)
+        pedido.setCodigoStatus(4L);
+
+        pedidoRepository.save(pedido);
+
+        return "Pedido Cancelado";
     }
 
 }

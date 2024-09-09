@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/pedidos")
@@ -22,9 +24,13 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @GetMapping("/buscarPedidos")
-    public ResponseEntity<?> buscarPedidos() {
-        logger.info("Buscando pedidos");
-        return ResponseEntity.ok(pedidoService.buscarPedidos());
+    public ResponseEntity<?> buscarPedidos(@RequestParam(required = false) Long codigoPedido, @RequestParam(required = false) Date dataPedido, @RequestParam(required = false) Long codigoStatus, @RequestParam(required = false) Long codigoProduto, @RequestParam(required = false) Long codigoCliente) {
+        try {
+            logger.info("Buscando pedidos");
+            return ResponseEntity.ok(pedidoService.buscarPedidos(codigoPedido, dataPedido, codigoStatus, codigoProduto, codigoCliente));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/internalizarPedido")
@@ -37,6 +43,12 @@ public class PedidoController {
         } catch (InternalServerErrorException e) {
             throw new InternalServerErrorException(e.getMessage());
         }
+    }
+
+    @PutMapping("/cancelarPedido")
+    public ResponseEntity<?> cancelarPedido(@RequestParam Long numeroPedido) throws BadRequestException {
+        logger.info("Cancelando pedido: " + numeroPedido);
+        return ResponseEntity.ok(pedidoService.cancelarPedido(numeroPedido));
     }
 
 }
