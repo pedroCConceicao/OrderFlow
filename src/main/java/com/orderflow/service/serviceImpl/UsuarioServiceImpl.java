@@ -22,12 +22,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public String registrarUsuario(UsuarioDTO usuarioDTO) {
 
-        if (usuarioRepository.findByEmail(usuarioDTO.getEmailUsuario()) != null) {
+        if (usuarioRepository.findByEmailUsuario(usuarioDTO.getEmailUsuario()) != null) {
             throw new InternalServerErrorException("E-mail já cadastrado");
-        }
-
-        if (!isValidEmail(usuarioDTO.getEmailUsuario())) {
-            throw new InternalServerErrorException("E-mail inválido");
         }
 
         Usuario usuario = new Usuario(
@@ -41,11 +37,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioRepository.save(usuario);
 
         return usuarioDTO.getNomeUsuario();
-    }
-
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[A-Z]{2,4}$";
-        return email.matches(emailRegex);
     }
 
 }

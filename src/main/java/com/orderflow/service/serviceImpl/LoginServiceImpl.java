@@ -23,21 +23,13 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public LoginMessage login(LoginDTO loginDTO) {
         String msg = "";
-        Usuario usuario = usuarioRepository.findByEmail(loginDTO.getEmail());
+        Usuario usuario1 = usuarioRepository.findByEmailUsuario(loginDTO.getEmail());
 
-        if(usuario != null) {
-            String senha = loginDTO.getSenha();
-            String encodedSenha = usuario.getSenhaUsuario();
-            Boolean senhaEstaCorreta = passwordEncoder.matches(loginDTO.getSenha(), encodedSenha);
+        if(usuario1 != null) {
+            Boolean senhaEstaCorreta = passwordEncoder.matches(loginDTO.getSenha(), usuario1.getSenhaUsuario());
 
             if(senhaEstaCorreta) {
-                Optional<Usuario> usuarioOptional = usuarioRepository.findOneByEmailAndSenha(loginDTO.getEmail(), loginDTO.getSenha());
-
-                if(usuarioOptional.isPresent()) {
-                    return new LoginMessage("Sucesso ao realizar login", true);
-                } else {
-                    return new LoginMessage("Falha ao realizar login",false);
-                }
+                return new LoginMessage("Sucesso ao realizar login", true);
             } else {
                 return new LoginMessage("E-mail ou senha não estão corretos",false);
             }
